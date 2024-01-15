@@ -3,14 +3,17 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/img/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./img/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="keywords" content="刮刮乐, 幸运游戏, 好运十倍刮刮卡, 在线娱乐, 免费刮奖">
-  <meta name="description" content="刮刮乐的快乐时刻，让您尽情享受幸运抽奖游戏的乐趣！为您提供幸运游戏的机会，在线娱乐无限乐趣。立即尝试您的抽奖机会。">
+
   <title>刮刮乐·好运十倍</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/css/index.css">
-  <script src="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/js/fabric.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/js/vue.global.min.js"></script>
+
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/mdui.css">
+
+  <script src="./js/mdui.global.js"></script>
+  <script src="./js/fabric.min.js"></script>
+  <script src="./js/vue.global.min.js"></script>
 </head>
 
 <body>
@@ -19,14 +22,14 @@
     <!-- 页面头部 -->
     <header>
       刮刮乐
-      <img src="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/img/ten.png" alt="">
+      <img src="./img/ten.png" alt="">
     </header>
 
     <!-- 刮奖尺寸选择 -->
-    <div class="size">
-      刮奖尺寸：
+    <!-- <div class="size">
+      <p>刮奖尺寸：</p>
       <input v-model="defaultSize" type="range" min="5" max="40" @change="sizeChange">
-    </div>
+    </div> -->
 
     <!-- 加载中 -->
     <div v-if="loading" class="loading">
@@ -42,7 +45,7 @@
         <!-- 卡片头部 -->
         <div class="card-head">
           <!-- 卡片头部图片 -->
-          <img src="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/img/ten.png" alt="">
+          <img src="./img/ten.png" alt="">
           <!-- <img src="./img/40.png" alt=""> -->
           <div class="card-head-result">刮奖结果</div>
         </div>
@@ -56,7 +59,7 @@
                 <div class="gold">
                   <!-- <span>奖金{{ cnNumList[9 - rowIndex] }}</span> -->
                   <span>{{ num }}元</span>
-                  <img src="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/img/gold.png" alt="">
+                  <img src="./img/gold.png" alt="">
                 </div>
               </template>
               <template v-else>
@@ -76,10 +79,10 @@
 
         <!-- 定位元素 -->
         <!-- 聚宝盆背景 -->
-        <img class="card-pot" src="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/img/pot.png" alt=""></img>
+        <img class="card-pot" src="./img/pot.png" alt=""></img>
 
         <!-- 点点星星背景 -->
-        <img class="card-star" src="https://cdn.jsdelivr.net/gh/ramsayi/guaguale/img/star.png" alt=""></img>
+        <img class="card-star" src="./img/star.png" alt=""></img>
 
         <!-- 中奖号码区域 -->
         <div class="card-award">
@@ -99,6 +102,11 @@
       <canvas id="mask" width="346" height="450"></canvas>
     </div>
 
+    <!-- 底部按钮 -->
+    <div class="btn-wrap custom-btn">
+      <mdui-button class="btn btn-color" @click="newGame">再来一张</mdui-button>
+    </div>
+
   </div>
 
   <script>
@@ -109,7 +117,7 @@
           defaultNumList: [[500], [60], [60], [20], [200], ['40万'], [10], [100], [40], [500]],
           numList: [],
           cnNumList: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'],
-          defaultSize: 20,
+          defaultSize: 40,
           canvas: null,
           loading: true
         };
@@ -131,18 +139,26 @@
 
             // 判断是否有中奖号码
             if (row.includes(this.awardNum)) {
+              console.log('有中奖号码', this.awardNum);
               // 将中奖号码替换为n%的概率出现中奖号码的数
-              row.splice(row.indexOf(this.awardNum), 1, Math.random() > 0.9 ? this.awardNum : this.createRandomNum())
+              // row.splice(row.indexOf(this.awardNum), 1, Math.random() > 0.9 ? this.awardNum : this.createRandomNum())
               // 将中奖号码替换为随机数
               // row.splice(row.indexOf(this.awardNum), 1, this.createRandomNum())
             }
 
             // 判断是否有10
             if (row.includes(10)) {
-              // 将10替换为n%的概率出现的10的数
-              row.splice(row.indexOf(10), 1, Math.random() > 0.95 ? 10 : this.createRandomNum())
-              // 将10替换为随机数
-              // row.splice(row.indexOf(10), 1, this.createRandomNum())
+              // 判断是否是-1位
+              if (row.indexOf(10) === row.length - 1) {
+                console.log('有10，且是-1位');
+              }
+              else {
+                console.log('有10');
+                // 将10替换为n%的概率出现的10的数
+                // row.splice(row.indexOf(10), 1, Math.random() > 0.95 ? 10 : this.createRandomNum())
+                // 将10替换为随机数
+                // row.splice(row.indexOf(10), 1, this.createRandomNum())
+              }
             }
 
             // 判断是否中奖
@@ -161,7 +177,7 @@
           this.canvas.freeDrawingBrush.width = this.defaultSize
 
           /* 绘制遮罩卡片 */
-          const backgroundImageUrl = 'https://cdn.jsdelivr.net/gh/ramsayi/guaguale/img/mask2.png'; // 替换为你的底层图像
+          const backgroundImageUrl = './img/mask2.png';
           fabric.Image.fromURL(backgroundImageUrl, (img) => {
             img.set({ selectable: false });
             img.scaleToWidth(this.canvas.width, true)
@@ -175,6 +191,10 @@
         },
         sizeChange() {
           this.canvas.freeDrawingBrush.width = this.defaultSize
+        },
+        newGame() {
+          // 刷新网页
+          window.location.reload()
         }
       }
     });
